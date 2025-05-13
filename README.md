@@ -1,8 +1,8 @@
 ### Generating data
 `cd generation/generate_explanation/`
-####Get the training data for LPFT.
+#### Get the training data for LPFT.
 `python LPFT_train_data.py`
-####Get the candidate paths for LPFT.
+#### Get the candidate paths for LPFT.
 `python candidate_paths.py`
 ### Generating explanations
 
