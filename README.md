@@ -16,4 +16,5 @@
 
 `python main_complex.py --dataset <dataset> --facts_to_explain_path <target_path> --candidate_path_dict<candidate_path>
 `
+
 Acceptable values for `--dataset` are `WN18RR` or `FB15k237`.
