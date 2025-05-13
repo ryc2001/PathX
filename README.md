@@ -4,7 +4,8 @@
 
   `python LPFT_train_data.py`
 - Get the candidate paths for LPFT.
-  -`python candidate_paths.py`
+
+   -`python candidate_paths.py`
 ### Generating explanations
 
 `cd generation/generate_explanation/`
