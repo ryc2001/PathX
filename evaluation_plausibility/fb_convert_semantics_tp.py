@@ -63,7 +63,7 @@ def save_dict_to_json(data, output_file):
 if __name__ == "__main__":
     mapping_path = 'baseline/ours/FB15k_mid2name.txt'
     mapping = load_mapping(mapping_path)
-    with open("/data/zhaotianzhe/ryc/KGEvaluator/evaluation/baseline/kelpie/output_None_complex_fb.txt", "r") as f:
+    with open("output_None_complex_fb.txt", "r") as f:
         input_data = f.readlines()
     replaced_data = replace_triples_with_semantics(input_data, mapping)
 
