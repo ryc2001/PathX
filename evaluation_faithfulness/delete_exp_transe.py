@@ -156,7 +156,6 @@ while i <= len(input_lines) -3:
         facts_to_explain.append(fact)
         sample = (dataset.entity_name_2_id[fact[0]], dataset.relation_name_2_id[fact[1]], dataset.entity_name_2_id[fact[2]])
         samples_to_explain.append(sample)
-    # 将结果转换为整数的三元组列表
     #     rule_samples = [tuple(map(int, final_triplets)) ]
         rule_samples = [tuple(map(int, triplet)) for triplet in final_triplets]
         sample_to_explain_2_best_rule[sample] = rule_samples

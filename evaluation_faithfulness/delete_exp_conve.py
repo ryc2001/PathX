@@ -173,8 +173,6 @@ new_dataset = copy.deepcopy(dataset)
 print("Removing samples: ")
 for (head, relation, tail) in samples_to_remove:
     print("\t" + dataset.printable_sample((head, relation, tail)))
-with open('final_path_new.json','w') as f:
-    json.dump(final_path, f,indent=4)
 # remove the samples_to_remove from training samples of new_dataset (and update new_dataset.to_filter accordingly)
 new_dataset.remove_training_samples(numpy.array(samples_to_remove))
 

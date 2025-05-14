@@ -8,7 +8,6 @@ import random
 import re
 import numpy
 import torch
-import json
 
 from dataset import ALL_DATASET_NAMES, Dataset, MANY_TO_ONE, ONE_TO_ONE
 from link_prediction.models.complex import ComplEx
@@ -149,7 +148,6 @@ while i <= len(input_lines) -3:
         facts_to_explain.append(fact)
         sample = (dataset.entity_name_2_id[fact[0]], dataset.relation_name_2_id[fact[1]], dataset.entity_name_2_id[fact[2]])
         samples_to_explain.append(sample)
-    # 将结果转换为整数的三元组列表
         rule_samples = [tuple(map(int, triplet)) for triplet in final_triplets]
         sample_to_explain_2_best_rule[sample] = rule_samples
     i += 3
