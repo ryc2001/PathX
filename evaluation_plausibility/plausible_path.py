@@ -1,20 +1,16 @@
 import json
 import httpx
 import openai
-from pprint import pprint
 import re
 import numpy as np
 
-# 设置 OpenAI API 密钥
-openai.api_key = "" # 替换为你的 OpenAI API 密钥
-
+openai.api_key = ""
 
 def extract_first_integer(message):
     match = re.search(r"\b([1-9]|10)\b", message)
     return int(match.group()) if match else None
 
 def evaluate_explanation(head, relation, tail, logic_paths):
-
     path_section = "Explanation paths:\n"
     for i, path in enumerate(logic_paths, 1):
         path_section += f"{i}. {path}\n"
@@ -63,10 +59,8 @@ def evaluate_explanation(head, relation, tail, logic_paths):
         )
         message = response.choices[0].message.content
 
-        # 解析每条路径的评分
         results = []
         for i, path in enumerate(logic_paths, 1):
-            # 匹配形如 "1. score: 8, justification: ..."
             pattern = rf"{i}\.\s*score\s*[:：]?\s*(\d+).*?justification\s*[:：]?\s*['\"]?(.*?)['\"]?\s*(?=\n\d|$)"
             match = re.search(pattern, message, re.DOTALL | re.IGNORECASE)
             if match:
@@ -142,9 +136,7 @@ def build_chain_path(target_triple, path_triples):
         if len(parts) != 3:
             return None
         h = parse_entity(parts[0])
-        # r = parts[1].strip().split('/')[-1]
         r = parts[1].strip()
-        # r = f'{parts[1].strip().split('/')[-2]}.{parts[1].strip().split('/')[-1]}'
         t = parse_entity(parts[2])
         return (h, r, t)
 
@@ -152,13 +144,11 @@ def build_chain_path(target_triple, path_triples):
     if any(p is None for p in parsed_triples):
         return "Invalid path"
 
-    # 构建链式结构
     chain = []
     current_entity = None
 
     for i, (h, r, t) in enumerate(parsed_triples):
         if i == 0:
-            # 起始实体
             chain.append(target_triple.split('\t')[0].split('.')[0])
 
             if h == chain[-1]:
@@ -166,7 +156,6 @@ def build_chain_path(target_triple, path_triples):
                 current_entity = t
             else:
                 chain.extend([f"inverse_{r}", h])
-                # chain.extend([f"{r}", h])
                 current_entity = h
         else:
             if h == current_entity:
@@ -174,7 +163,6 @@ def build_chain_path(target_triple, path_triples):
                 current_entity = t
             elif t == current_entity:
                 chain.extend([f"inverse_{r}", h])
-                # chain.extend([f"{r}", h])
                 current_entity = h
             else:
                 chain.extend([r, t])
@@ -186,13 +174,9 @@ def parse_json_to_data(input_json):
     data = []
     for triple, paths in input_json.items():
         head, relation, tail = triple.strip().split("\t")
-
         for path in paths:
             logical_path = build_chain_path(triple, path)
-            # data.append((head, relation.split('/')[-1], tail, logical_path))
             data.append((head, relation, tail, logical_path))
-            # rel = f'{relation.split('/')[-2]}.{relation.split('/')[-1]}'
-            # data.append((head, rel, tail, logical_path))
     return data
 
 def run_evaluation(data, json_data):
@@ -205,10 +189,7 @@ def run_evaluation(data, json_data):
 
     for i, ((h, r, t), paths) in enumerate(grouped.items()):
         print(f"[{i}] Evaluating: ({h.split('.')[0]}, {r}, {t.split('.')[0]})")
-
-        #glosses = extract_entity_glosses(triple_key, sum(path_triples_list, []))  # 展平所有三元组
         path_results = evaluate_explanation(h.split('.')[0], r, t.split('.')[0], paths)
-
         results[(h.split('.')[0], r, t.split('.')[0])] = path_results
 
     return results
@@ -218,24 +199,17 @@ def save_results_to_file(results, filename):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(converted, f, ensure_ascii=False, indent=4)
 
-# -----------------------
-# 🎯 Metric: Precision@k
-# -----------------------
 def precision_at_k(llm_scores, k, threshold=7):
     top_k_scores = llm_scores[:k]
     positives = [s for s in top_k_scores if s is not None and s >= threshold]
     return len(positives) / k if k > 0 else 0
-# -----------------------
-# 🎯 Metric: AvgScore@k
-# -----------------------
+
 def average_score_at_k(llm_scores, k):
     top_k_scores = [s for s in llm_scores[:k] if s is not None]
     if not top_k_scores:
         return 0.0
     return sum(top_k_scores) / len(top_k_scores)
-# -----------------------
-# 🎯 Metric: nDCG@k
-# -----------------------
+
 def dcg(scores):
     return sum((2 ** s - 1) / np.log2(i + 2) for i, s in enumerate(scores))
 
@@ -245,7 +219,6 @@ def ndcg_at_k(model_scores, llm_scores, k):
 
     order = np.argsort(model_scores)[::-1]
     ranked_true_scores = [llm_scores[i] for i in order[:k] if llm_scores[i] is not None]
-
     ideal_scores = sorted([s for s in llm_scores if s is not None], reverse=True)[:k]
 
     if not ranked_true_scores or not ideal_scores:
@@ -259,7 +232,7 @@ def calculate_metrics(results, k1, k2, k3, threshold=5):
     ndcg_list = []
     avg_score_list = []
     for triple_key, path_infos in results.items():
-        model_scores = list(range(len(path_infos), 0, -1))  # 模拟模型排名（或用真实 relevance 分数）
+        model_scores = list(range(len(path_infos), 0, -1))
         llm_scores = [p["score"] for p in path_infos]
 
         p_k = precision_at_k(llm_scores, k2, threshold)
@@ -279,9 +252,6 @@ def calculate_metrics(results, k1, k2, k3, threshold=5):
         "Num Triples": len(results)
     }
 
-# -----------------------
-# 🏁 主程序入口
-# -----------------------
 if __name__ == "__main__":
     with open("baseline/ours/fb_transe_ab1_sem.json", "r") as f:
         input_json = json.load(f)
@@ -295,5 +265,6 @@ if __name__ == "__main__":
     save_results_to_file(results, "baseline/ours/fb_transe_ab1_results.json")
 
     print("\nCalculating evaluation metrics...")
-    metrics = calculate_metrics(results, k1=5, k2=1, k3=2,threshold=7)
+    metrics = calculate_metrics(results, k1=5, k2=1, k3=2, threshold=7)
+    from pprint import pprint
     pprint(metrics)

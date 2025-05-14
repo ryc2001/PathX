@@ -9,7 +9,7 @@ def synset_id_to_name(synset_id):
                 synset = wn.synset_from_pos_and_offset(pos, synset_offset)
                 return f"{synset.name()}: {synset.definition()}"
             except:
-                continue  # 尝试下一个词性
+                continue
         return "Not Found"
     except ValueError:
         return "Invalid ID"

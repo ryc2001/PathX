@@ -49,5 +49,3 @@ if __name__ == "__main__":
 
     output_file = "baseline/GR/wn_complex_sem.json"
     save_dict_to_json(replaced_data, output_file)
-
-    print(f"处理完成，替换后的数据已保存到文件：{output_file}")
