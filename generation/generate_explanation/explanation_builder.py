@@ -15,17 +15,10 @@ from prefilters.topology_prefilter import TopologyPreFilter
 DEAFAULT_XSI_THRESHOLD = 5
 
 class ExplanationBuilder:
-    """
-    The NecessaryExplanationBuilder object guides the search for necessary explanations.
-    """
-
     def __init__(self,
                  model: Model,
                  dataset: Dataset,
                  sample_to_explain: Tuple[Any, Any, Any]):
-        """
-        NecessaryExplanationBuilder object constructor.
-        """
         self.model = model
         self.dataset = dataset
         self.sample_to_explain = sample_to_explain
@@ -135,7 +128,7 @@ class PathX:
 
         for target, paths in path.items():
             if target == sample_to_explain:
-                most_promising_samples = paths       ###格式：list[list[tp1,tp2],list...,list]
+                most_promising_samples = paths
 
         explanation_builder = ModelExplanationBuilder(model=self.model,
                                                       dataset=self.dataset,

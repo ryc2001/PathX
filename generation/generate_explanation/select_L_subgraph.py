@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json
 import argparse
-import random
 import numpy as np
 import pickle
 import os

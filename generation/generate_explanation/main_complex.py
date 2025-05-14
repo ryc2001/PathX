@@ -12,12 +12,11 @@ sys.path.append(
     os.path.realpath(os.path.join(os.path.abspath(__file__), os.path.pardir, os.path.pardir, os.path.pardir)))
 
 from dataset import ALL_DATASET_NAMES, Dataset
-from explanation_builder import PathX as pathX
+from explanation_builder import PathX as PathX
 from link_prediction.models.complex import ComplEx
 from link_prediction.models.model import DIMENSION, INIT_SCALE, LEARNING_RATE, OPTIMIZER_NAME, DECAY_1, DECAY_2, \
     REGULARIZER_WEIGHT, EPOCHS, \
     BATCH_SIZE, REGULARIZER_NAME
-from prefilters.prefilter import TOPOLOGY_PREFILTER, TYPE_PREFILTER, NO_PREFILTER
 
 datasets = ALL_DATASET_NAMES
 
@@ -153,7 +152,7 @@ for key, value in candidate_path_dict.items():
     candidate_path_id[key_id] = value_ids
 if args.baseline is None:
     pathX = PathX(model=model, dataset=dataset, hyperparameters=hyperparameters, prefilter_type=prefilter)
-for i, fact in enumerate(testing_facts):################改成target集合！命令行改
+for i, fact in enumerate(testing_facts):
     if i>= 0:
         head, relation, tail = fact
         print("Explaining fact " + str(i) + " on " + str(

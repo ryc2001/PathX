@@ -3,12 +3,9 @@ from collections import defaultdict
 import numpy
 from dataset import Dataset
 import json
-# from get_subgraph import sel_influential_rels
-# from get_subgraph import extract_influential_subgraph
-# from get_subgraph import find_paths
-from get_subgraph_2 import sel_influential_rels
-from get_subgraph_2 import extract_influential_subgraph
-from get_subgraph_2 import find_paths
+from get_neigh import sel_influential_rels
+from get_neigh import extract_influential_subgraph
+from get_neigh import find_paths
 class pathXDataset(Dataset):
     """
         Since Datasets handle the correspondence between textual entities and ids,
@@ -209,15 +206,15 @@ class pathXDataset(Dataset):
     def get_subgraph(self,train_samples, ent1, ent2, rel):
         csv_file = "WN18RR.csv"
         json_file = "WN18RR_relation_to_number.json"
-        # csv_file = "FB15k-237.csv"  # 输入的 CSV 文件路径
-        # json_file = "FB15k-237_relation_to_number.json"  # 输入的 JSON 文件路径
+        # csv_file = "FB15k-237.csv"
+        # json_file = "FB15k-237_relation_to_number.json"
         influ_rels = sel_influential_rels(csv_file, json_file, rel, 1)
         get_subgraph = extract_influential_subgraph(train_samples, ent1, ent2, influ_rels)
         one_hop = find_paths(get_subgraph,ent1,ent2)
         head = self.entity_id_2_name[ent1]
         relation = self.relation_id_2_name[rel]
         tail = self.entity_id_2_name[ent2]
-        with open("/data/zhaotianzhe/ryc/KGEvaluator/generation/WN18RR/WN18RR_candi_path_1_complex.json",'r') as f:
+        with open("WN18RR/WN18RR_candi_path_1_complex.json",'r') as f:
             path = json.load(f)
         candi_path = path[f'{head}\t{relation}\t{tail}']
         final_triple = set()

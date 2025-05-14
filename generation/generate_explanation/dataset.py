@@ -8,13 +8,12 @@ import numpy
 from config import ROOT
 
 DATA_PATH = os.path.join(ROOT, "data")
-FB15K = "FB15k"
-FB15K_237 = "FB15k-237"
-WN18 = "WN18"
-WN18RR = "WN18RR"
-YAGO3_10 = "YAGO3-10"
 
-ALL_DATASET_NAMES = [FB15K, FB15K_237, WN18, WN18RR, YAGO3_10]
+FB15K_237 = "FB15k-237"
+WN18RR = "WN18RR"
+
+
+ALL_DATASET_NAMES = [FB15K_237,WN18RR]
 
 # relation types
 ONE_TO_ONE="1-1"
